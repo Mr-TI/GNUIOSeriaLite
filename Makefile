@@ -19,7 +19,7 @@ clean :
 	-rm -f *.o $(LIB) $(HEADER)
 
 all: $(LIB_DIR) $(BUILD_DIR) $(LIB)
-	cd bin && zip -r ../build/gnuioserial.jar gnu
+	cd bin && zip -r ../bin/gnuioserial.jar gnu
 
 $(HEADER): bin/gnu/io/serial/SerialDriver.class
 	javah -jni -classpath bin/ -d $(BUILD_DIR) gnu.io.serial.SerialDriver

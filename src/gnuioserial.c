@@ -27,6 +27,7 @@
 #include <jni.h>
 #include <errno.h>
 #include <string.h>
+#include <ctype.h>
 #include <gnu_io_serial_SerialDriver.h>
 
 #define BREAK_ON_FAIL(exp) if ((exp) == -1) break
@@ -59,14 +60,6 @@ void _throwIllegalArgumentException(JNIEnv *env, const char *message) {
 	(*env)->ThrowNew(env, javaIoExcp, message);
 }
 
-#define _getStringRequiredArgOrBreak(ret, env, id, name) \
-	if (id) ret = (*env)->GetStringUTFChars(env, id, 0);\
-	if (ret == NULL) {\
-		_throwIllegalArgumentException(env, "Invalid parameter "name": cannot be null");\
-		break;\
-	}\
-	do { } while(0)
-
 /*
  * Class:     gnu_io_SerialDriver
  * Method:    setDebugEnabled
@@ -76,6 +69,7 @@ JNIEXPORT void JNICALL Java_gnu_io_serial_SerialDriver_setDebugEnabled
   (JNIEnv *env, jclass klass, jboolean enabled) {
 	debug = enabled;
 }
+
 /*
  * Class:     gnu_io_SerialDriver
  * Method:    _open
@@ -101,7 +95,10 @@ JNIEXPORT jint JNICALL Java_gnu_io_serial_SerialDriver__1open
 	int blocking = 1;
 	struct termios config;
 	do {
-		_getStringRequiredArgOrBreak(devName, env, devNameId, "device name");
+		if ((devName = (*env)->GetStringUTFChars(env, devNameId, 0)) == NULL) {
+			_throwIllegalArgumentException(env, "Invalid parameter device name: cannot be null");
+			break;
+		}
 		DEBUG(" [ DD ] GNU IO Native serial driver: open device %s\n", devName);
 		if (optionsId) {
 			key = options = strdup((*env)->GetStringUTFChars(env, optionsId, 0));
@@ -110,12 +107,14 @@ JNIEXPORT jint JNICALL Java_gnu_io_serial_SerialDriver__1open
 				if (key[0] == '\0') {
 					break;
 				}
+				while(isspace(*key)) key++;
 				val = strchr(key, '=');
 				if (val[0] == '\0') {
 					break;
 				}
 				val[0] = 0;
 				val++;
+				while(isspace(*val)) val++;
 				next = strchr(val, ';');
 				if (next) {
 					next[0] = 0;
@@ -124,18 +123,18 @@ JNIEXPORT jint JNICALL Java_gnu_io_serial_SerialDriver__1open
 				DEBUG(" [ DD ] GNU IO Native serial driver: option %s = %s\n", key, val);
 				if (strcmp(key, "baudrate") == 0) {
 					baudrate = atoi(val);
-				} else if (strcmp(key, "bitsperchar") == 0) {
+				} else if (strncmp(key, "bitsperchar", 11) == 0) {
 					bitsperchar = atoi(val);
-				} else if (strcmp(key, "stopbits") == 0) {
+				} else if (strncmp(key, "stopbits", 8) == 0) {
 					stopbits = atoi(val);
-				} else if (strcmp(key, "parity") == 0) {
+				} else if (strncmp(key, "parity", 6) == 0) {
 					parity = val;
-				} else if (strcmp(key, "blocking") == 0) {
-					blocking = (strcmp(val, "on") == 0? 1:0);
-				} else if (strcmp(key, "autocts") == 0) {
-					autocts = (strcmp(val, "on") == 0? 1:0);
-				} else if (strcmp(key, "autorts") == 0) {
-					autorts = (strcmp(val, "on") == 0? 1:0);
+				} else if (strncmp(key, "blocking", 8) == 0) {
+					blocking = (strncmp(val, "on", 2) == 0? 1:0);
+				} else if (strncmp(key, "autocts", 7) == 0) {
+					autocts = (strncmp(val, "on", 2) == 0? 1:0);
+				} else if (strncmp(key, "autorts", 7) == 0) {
+					autorts = (strncmp(val, "on", 2) == 0? 1:0);
 				} else {
 					snprintf(buff, 31, "Invalid option %s", key);
 					error = buff;
