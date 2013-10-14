@@ -30,6 +30,8 @@
 #include <ctype.h>
 #include <gnu_io_serial_SerialDriver.h>
 
+#define VERSION "1.0.0"
+
 #define BREAK_ON_FAIL(exp) if ((exp) == -1) break
 #define DEBUG(args...) if (debug) fprintf (stderr, args)
 #define DEBUG_ARRAY(array, off, len) if (debug) _dumpByteArray(array, off, len)
@@ -68,6 +70,10 @@ void _throwIllegalArgumentException(JNIEnv *env, const char *message) {
 JNIEXPORT void JNICALL Java_gnu_io_serial_SerialDriver_setDebugEnabled
   (JNIEnv *env, jclass klass, jboolean enabled) {
 	debug = enabled;
+	if (enabled) {
+		fprintf (stderr, " < DD > GNU IO Native serial driver version "
+		VERSION" (build date: "__DATE__" "__TIME__")\n < DD > GNU IO Native serial driver: Debug enabled\n");
+	}
 }
 
 /*
@@ -99,10 +105,10 @@ JNIEXPORT jint JNICALL Java_gnu_io_serial_SerialDriver__1open
 			_throwIllegalArgumentException(env, "Invalid parameter device name: cannot be null");
 			break;
 		}
-		DEBUG(" [ DD ] GNU IO Native serial driver: open device %s\n", devName);
+		DEBUG(" < DD > GNU IO Native serial driver: open device %s\n", devName);
 		if (optionsId) {
 			key = options = strdup((*env)->GetStringUTFChars(env, optionsId, 0));
-			DEBUG(" [ DD ] GNU IO Native serial driver: options: %s\n", options);
+			DEBUG(" < DD > GNU IO Native serial driver: options: %s\n", options);
 			do {
 				if (key[0] == '\0') {
 					break;
@@ -120,7 +126,7 @@ JNIEXPORT jint JNICALL Java_gnu_io_serial_SerialDriver__1open
 					next[0] = 0;
 					next++;
 				}
-				DEBUG(" [ DD ] GNU IO Native serial driver: option %s = %s\n", key, val);
+				DEBUG(" < DD > GNU IO Native serial driver: option %s = %s\n", key, val);
 				if (strcmp(key, "baudrate") == 0) {
 					baudrate = atoi(val);
 				} else if (strncmp(key, "bitsperchar", 11) == 0) {
@@ -152,7 +158,7 @@ JNIEXPORT jint JNICALL Java_gnu_io_serial_SerialDriver__1open
 		
 		config.c_cflag |= (CLOCAL | CREAD);
 		
-		DEBUG(" [ DD ] GNU IO Native serial driver: set baudrate: %d\n", baudrate);
+		DEBUG(" < DD > GNU IO Native serial driver: set baudrate: %d\n", baudrate);
 		switch (baudrate) {
 			case 1200:
 				ret =  cfsetispeed(&config,B1200);
@@ -194,7 +200,7 @@ JNIEXPORT jint JNICALL Java_gnu_io_serial_SerialDriver__1open
 			break;
 		}
 		
-		DEBUG(" [ DD ] GNU IO Native serial driver: set bitsperchar: %d\n", bitsperchar);
+		DEBUG(" < DD > GNU IO Native serial driver: set bitsperchar: %d\n", bitsperchar);
 		switch (bitsperchar) {
 			case 7:
 				config.c_cflag |= CS7;
@@ -210,7 +216,7 @@ JNIEXPORT jint JNICALL Java_gnu_io_serial_SerialDriver__1open
 			break;
 		}
 		
-		DEBUG(" [ DD ] GNU IO Native serial driver: set parity: %s\n", parity);
+		DEBUG(" < DD > GNU IO Native serial driver: set parity: %s\n", parity);
 		switch (parity[0]) {
 			case 'n':
 			case 'N':
@@ -234,7 +240,7 @@ JNIEXPORT jint JNICALL Java_gnu_io_serial_SerialDriver__1open
 			break;
 		}
 		
-		DEBUG(" [ DD ] GNU IO Native serial driver: set stopbits: %d\n", stopbits);
+		DEBUG(" < DD > GNU IO Native serial driver: set stopbits: %d\n", stopbits);
 		switch (stopbits) {
 			case 1:
 				config.c_cflag &= ~ CSTOPB;
@@ -251,7 +257,7 @@ JNIEXPORT jint JNICALL Java_gnu_io_serial_SerialDriver__1open
 		}
 		
 		if (blocking == 0) {
-			fprintf(stderr, " [ WW ] GNU IO Native serial driver: blocking=off not supported yet\n");
+			fprintf(stderr, " < WW > GNU IO Native serial driver: blocking=off not supported yet\n");
 		}
 		
 		config.c_cc[VMIN] = 1;
@@ -259,10 +265,10 @@ JNIEXPORT jint JNICALL Java_gnu_io_serial_SerialDriver__1open
 
 		// Control flags
 		if (autorts && autocts) {
-			DEBUG(" [ DD ] GNU IO Native serial driver: RTS/CTS enabled\n");
+			DEBUG(" < DD > GNU IO Native serial driver: RTS/CTS enabled\n");
 			config.c_cflag |= CRTSCTS; // Enable RTS/CTS
 		} else {
-			DEBUG(" [ DD ] GNU IO Native serial driver: RTS/CTS disabled\n");
+			DEBUG(" < DD > GNU IO Native serial driver: RTS/CTS disabled\n");
 			config.c_cflag &= ~CRTSCTS; // Enable RTS/CTS
 		}
 		config.c_cflag |= CLOCAL;
@@ -271,12 +277,12 @@ JNIEXPORT jint JNICALL Java_gnu_io_serial_SerialDriver__1open
 		
 		BREAK_ON_FAIL(tcsetattr(fd, TCSANOW, &config));
 		
-		DEBUG(" [ DD ] GNU IO Native serial driver: open success\n");
+		DEBUG(" < DD > GNU IO Native serial driver: open success\n");
 		return fd;
 	} while(0);
 	if ((error != NULL && asprintf(&val, "Fail to open %s: %s", devName, error) != -1) 
 		|| asprintf(&val, "Fail to open %s: %s", devName, strerror(errno)) != -1) {
-		DEBUG(" [ DD ] GNU IO Native serial driver: open failure with error: %s\n", val);
+		DEBUG(" < DD > GNU IO Native serial driver: open failure with error: %s\n", val);
 		_throwIOException(env, val);
 		free(val);
 	}
@@ -293,7 +299,7 @@ JNIEXPORT jint JNICALL Java_gnu_io_serial_SerialDriver__1open
  */
 JNIEXPORT void JNICALL Java_gnu_io_serial_SerialDriver__1close
   (JNIEnv *env, jclass klass, jint fd) {
-	DEBUG(" [ DD ] GNU IO Native serial driver: close\n");
+	DEBUG(" < DD > GNU IO Native serial driver: close\n");
 	close(fd);
 }
 
@@ -308,12 +314,12 @@ JNIEXPORT jint JNICALL Java_gnu_io_serial_SerialDriver__1available
 	int result;
 	if( ioctl( fd, FIONREAD, &result ) < 0 ) {
 		if (asprintf(&error_message, "Fail to write: %s", strerror(errno)) != -1) {
-			DEBUG(" [ DD ] GNU IO Native serial driver: get available failure with error: %s\n", error_message);
+			DEBUG(" < DD > GNU IO Native serial driver: get available failure with error: %s\n", error_message);
 			_throwIOException(env, error_message);
 			free(error_message);
 		}
 	}
-	DEBUG(" [ DD ] GNU IO Native serial driver: available: %d\n", result);
+	DEBUG(" < DD > GNU IO Native serial driver: available: %d\n", result);
 	return result;
 }
 
@@ -335,12 +341,12 @@ JNIEXPORT jint JNICALL Java_gnu_io_serial_SerialDriver__1read__I_3BII
 	}  while ((readCnt < len ) && (ret > 0 || errno == EINTR));
 	if (ret < 0) {
 		if (asprintf(&error_message, "Fail to write: %s", strerror(errno)) != -1) {
-			DEBUG(" [ DD ] GNU IO Native serial driver: read byte array failure with error: %s\n", error_message);
+			DEBUG(" < DD > GNU IO Native serial driver: read byte array failure with error: %s\n", error_message);
 			_throwIOException(env, error_message);
 			free(error_message);
 		}
 	}
-	DEBUG(" [ DD ] GNU IO Native serial driver: read byte array:");
+	DEBUG(" < DD > GNU IO Native serial driver: read byte array:");
 	DEBUG_ARRAY(data, off, len);
 	DEBUG("\n");
 	(*env)->ReleaseByteArrayElements(env, b, data, 0);
@@ -360,12 +366,12 @@ JNIEXPORT jint JNICALL Java_gnu_io_serial_SerialDriver__1read__I
 	ret = read(fd, &data, 1);
 	if (ret < 0) {
 		if (asprintf(&error_message, "Fail to write: %s", strerror(errno)) != -1) {
-			DEBUG(" [ DD ] GNU IO Native serial driver: read byte failure with error: %s\n", error_message);
+			DEBUG(" < DD > GNU IO Native serial driver: read byte failure with error: %s\n", error_message);
 			_throwIOException(env, error_message);
 			free(error_message);
 		}
 	}
-	DEBUG(" [ DD ] GNU IO Native serial driver: read byte: %02X\n", (ret? data: -1) & 0xFF);
+	DEBUG(" < DD > GNU IO Native serial driver: read byte: %02X\n", (ret? data: -1) & 0xFF);
 	return ret? (data & 0xFF): -1;
 }
 
@@ -380,12 +386,12 @@ JNIEXPORT void JNICALL Java_gnu_io_serial_SerialDriver__1write__II
 	char data = (char)b;
 	if (write(fd, &data, 1) < 0) {
 		if (asprintf(&error_message, "Fail to write: %s", strerror(errno)) != -1) {
-			DEBUG(" [ DD ] GNU IO Native serial driver: write byte failure with error: %s\n", error_message);
+			DEBUG(" < DD > GNU IO Native serial driver: write byte failure with error: %s\n", error_message);
 			_throwIOException(env, error_message);
 			free(error_message);
 		}
 	}
-	DEBUG(" [ DD ] GNU IO Native serial driver: write byte: %02X\n", b & 0xFF);
+	DEBUG(" < DD > GNU IO Native serial driver: write byte: %02X\n", b & 0xFF);
 }
 
 /*
@@ -406,12 +412,12 @@ JNIEXPORT void JNICALL Java_gnu_io_serial_SerialDriver__1write__I_3BII
 	}  while ((writeCnt < len ) && (ret > 0 || errno == EINTR));
 	if (ret < 0) {
 		if (asprintf(&error_message, "Fail to write: %s", strerror(errno)) != -1) {
-			DEBUG(" [ DD ] GNU IO Native serial driver: write byte array failure with error: %s\n", error_message);
+			DEBUG(" < DD > GNU IO Native serial driver: write byte array failure with error: %s\n", error_message);
 			_throwIOException(env, error_message);
 			free(error_message);
 		}
 	}
-	DEBUG(" [ DD ] GNU IO Native serial driver: write byte array:");
+	DEBUG(" < DD > GNU IO Native serial driver: write byte array:");
 	DEBUG_ARRAY(data, off, len);
 	DEBUG("\n");
 	(*env)->ReleaseByteArrayElements(env, b, data, 0);
