@@ -33,7 +33,7 @@ $(LIB_DIR) :
 $(BUILD_DIR) :
 	mkdir -p $@
 
-$(OBJECTS) :$(BUILD_DIR)/%.o: %.c $(HEADER)
+$(OBJECTS) :$(BUILD_DIR)/%.o: src/%.c $(HEADER)
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 $(LIB): $(OBJECTS)
