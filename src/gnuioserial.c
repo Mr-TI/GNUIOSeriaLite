@@ -48,6 +48,7 @@ void _dumpByteArray(void *array, int off, int len) {
 void _throwIOException(JNIEnv *env, const char *message) {
 	jclass javaIoExcp = (*env)->FindClass(env, "java/io/IOException");
 	if (javaIoExcp == NULL) {
+		fprintf(stderr, " < CC > GNU IO Native serial driver: Class java.io.IOException not found!\n");
 		return;
 	}
 	(*env)->ThrowNew(env, javaIoExcp, message);
@@ -56,7 +57,7 @@ void _throwIOException(JNIEnv *env, const char *message) {
 void _throwIllegalArgumentException(JNIEnv *env, const char *message) {
 	jclass javaIoExcp = (*env)->FindClass(env, "java/lang/IllegalArgumentException");
 	if (javaIoExcp == NULL) {
-		printf("Class java.lang.IllegalArgumentException");
+		fprintf(stderr, " < CC > GNU IO Native serial driver: Class java.lang.IllegalArgumentException not found!\n");
 		return;
 	}
 	(*env)->ThrowNew(env, javaIoExcp, message);
