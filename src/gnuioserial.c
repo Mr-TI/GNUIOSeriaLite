@@ -147,7 +147,6 @@ JNIEXPORT jint JNICALL Java_gnu_io_serial_SerialDriver__1open
 					error = buff;
 				}
 			} while ((key = next) != NULL);
-			free(options);
 		}
 		if (error != NULL) {
 			break;
@@ -290,6 +289,7 @@ JNIEXPORT jint JNICALL Java_gnu_io_serial_SerialDriver__1open
 	if (fd != -1) {
 		close(fd);
 	}
+	free(options);
 	return fd;
 }
 
