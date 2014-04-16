@@ -30,7 +30,7 @@
 #include <ctype.h>
 #include <gnu_io_serial_SerialDriver.h>
 
-#define VERSION "1.0.0"
+#define VERSION "1.0.3"
 
 #define BREAK_ON_FAIL(exp) if ((exp) == -1) break
 #define DEBUG(args...) if (debug) fprintf (stderr, args)
@@ -91,7 +91,6 @@ JNIEXPORT jint JNICALL Java_gnu_io_serial_SerialDriver__1open
 	char *val;
 	char *next;
 	char *parity = "none";
-	char buff[32];
 	int fd = -1;
 	int ret = 0;
 	int baudrate = 57600;
@@ -143,8 +142,7 @@ JNIEXPORT jint JNICALL Java_gnu_io_serial_SerialDriver__1open
 				} else if (strncmp(key, "autorts", 7) == 0) {
 					autorts = (strncmp(val, "on", 2) == 0? 1:0);
 				} else {
-					snprintf(buff, 31, "Invalid option %s", key);
-					error = buff;
+					DEBUG(" < DD > GNU IO Native serial driver: Unsupported option: %s\n", key);
 				}
 			} while ((key = next) != NULL);
 		}
@@ -191,6 +189,30 @@ JNIEXPORT jint JNICALL Java_gnu_io_serial_SerialDriver__1open
 			case 115200:
 				ret =  cfsetispeed(&config,B115200);
 				ret += cfsetospeed(&config,B115200);
+				break;
+			case 1500000:
+				ret =  cfsetispeed(&config,B1500000);
+				ret += cfsetospeed(&config,B1500000);
+				break;
+			case 2000000:
+				ret =  cfsetispeed(&config,B2000000);
+				ret += cfsetospeed(&config,B2000000);
+				break;
+			case 2500000:
+				ret =  cfsetispeed(&config,B2500000);
+				ret += cfsetospeed(&config,B2500000);
+				break;
+			case 3000000:
+				ret =  cfsetispeed(&config,B3000000);
+				ret += cfsetospeed(&config,B3000000);
+				break;
+			case 3500000:
+				ret =  cfsetispeed(&config,B3500000);
+				ret += cfsetospeed(&config,B3500000);
+				break;
+			case 4000000:
+				ret =  cfsetispeed(&config,B4000000);
+				ret += cfsetospeed(&config,B4000000);
 				break;
 			default:
 				ret = -1;

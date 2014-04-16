@@ -1,5 +1,5 @@
  
-CFLAGS += -fPIC -Wall -Werror -std=gnu99 -g -O2 -Ibuild -I. -I/usr/lib/jvm/java-7-openjdk-i386/include
+CFLAGS += -fPIC -Wall -Werror -std=gnu99 -g -O3 -Ibuild -I.
 LDFLAGS_EXTRA = -shared
 
 ARCH = $(shell uname -m | sed 's/^i.86$$/x86/')
@@ -9,7 +9,7 @@ HEADER = $(BUILD_DIR)/gnu_io_SerialDriver.h
 CLASSE = bin/gnu/io/serial/SerialDriver.class
 OBJECTS = $(BUILD_DIR)/gnuioserial.o
 OUT_DIR ?= bin/lib
-LIB_DIR ?= $(OUT_DIR)/linux-$(ARCH)
+LIB_DIR ?= $(OUT_DIR)/$(ARCH)
 LIB = $(LIB_DIR)/libgnuioserial.so
 STRIP ?= strip
 
