@@ -5,26 +5,26 @@ LDFLAGS_EXTRA = -shared
 ARCH = $(shell uname -m | sed 's/^i.86$$/x86/')
 
 BUILD_DIR ?= build
-HEADER = $(BUILD_DIR)/gnu_io_SerialDriver.h
-CLASSE = bin/gnu/io/serial/SerialDriver.class
-OBJECTS = $(BUILD_DIR)/gnuioserial.o
+HEADER = $(BUILD_DIR)/gnu_io_serialite_SerialDriver.h
+CLASSE = bin/gnu/io/serialite/SerialDriver.class
+OBJECTS = $(BUILD_DIR)/gnuioserialite.o
 OUT_DIR ?= bin/lib
 LIB_DIR ?= $(OUT_DIR)/$(ARCH)
-LIB = $(LIB_DIR)/libgnuioserial.so
+LIB = $(LIB_DIR)/libgnuioserialite.so
 STRIP ?= strip
 
 default: all
 
 clean :
-	-rm -f *.o $(LIB) $(HEADER)
+	-rm -f $(OBJECTS) $(LIB) $(HEADER)
 
 all: $(LIB_DIR) $(BUILD_DIR) $(LIB)
-	cd bin && zip -r ../bin/gnuioserial.jar gnu
+	cd bin && zip -r ../bin/gnuioserialite.jar gnu
 
-$(HEADER): bin/gnu/io/serial/SerialDriver.class
-	javah -jni -classpath bin/ -d $(BUILD_DIR) gnu.io.serial.SerialDriver
+$(HEADER): bin/gnu/io/serialite/SerialDriver.class
+	javah -jni -classpath bin/ -d $(BUILD_DIR) gnu.io.serialite.SerialDriver
 
-$(CLASSE): src/gnu/io/serial/SerialDriver.java
+$(CLASSE): src/gnu/io/serialite/SerialDriver.java
 	javac -s src -d bin $^
 
 $(LIB_DIR) :
