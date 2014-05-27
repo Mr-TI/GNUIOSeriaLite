@@ -1,0 +1,6 @@
+language: c
+
+compiler:
+  - gcc
+
+script: make CFLAGS="-fPIC -Wall -Werror -std=gnu99 -g -O3 -Ibuild -I. -I/usr/lib64/icedtea7/include/ -I/usr/lib64/icedtea7/include/linux/ -Ibuild"
