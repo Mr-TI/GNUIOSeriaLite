@@ -3,4 +3,4 @@ language: c
 compiler:
   - gcc
 
-script: make CFLAGS="-fPIC -Wall -Werror -std=gnu99 -g -O3 -Ibuild -I. -I/usr/lib64/icedtea7/include/ -I/usr/lib64/icedtea7/include/linux/ -I/usr/lib/icedtea7/include/ -I/usr/lib/icedtea7/include/linux/ -Ibuild"
+script: make CFLAGS="-fPIC -Wall -Werror -std=gnu99 -g -O3 -Ibuild -I. -I/usr/lib/jvm/java-7-openjdk-*/include/ -I/usr/lib/jvm/java-7-openjdk-*/include/linux/ -Ibuild"
