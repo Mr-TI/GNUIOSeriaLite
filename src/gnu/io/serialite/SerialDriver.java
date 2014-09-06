@@ -58,6 +58,7 @@ public class SerialDriver {
 			_write(fd, b, off, len);
 		}
 		
+		@Override
 		public synchronized void flush() throws IOException {
 			_flush(fd);
 		};
