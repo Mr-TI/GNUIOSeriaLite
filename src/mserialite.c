@@ -28,7 +28,7 @@
 #include <errno.h>
 #include <string.h>
 #include <ctype.h>
-#include <gnu_io_serialite_SerialDriver.h>
+#include <org_mbedsys_io_SerialDriver.h>
 
 #define VERSION "1.1.0"
 
@@ -69,11 +69,11 @@ void _throwIllegalArgumentException(JNIEnv *env, const char *message) {
 }
 
 /*
- * Class:     gnu_io_serialite_SerialDriver
+ * Class:     org_mbedsys_io_SerialDriver
  * Method:    setDebugEnabled
  * Signature: (Z)V
  */
-JNIEXPORT void JNICALL Java_gnu_io_serialite_SerialDriver_setDebugEnabled
+JNIEXPORT void JNICALL Java_org_mbedsys_io_SerialDriver_setDebugEnabled
   (JNIEnv *env, jclass klass, jboolean enabled) {
 	debug = enabled;
 	if (enabled) {
@@ -83,11 +83,11 @@ JNIEXPORT void JNICALL Java_gnu_io_serialite_SerialDriver_setDebugEnabled
 }
 
 /*
- * Class:     gnu_io_serialite_SerialDriver
+ * Class:     org_mbedsys_io_SerialDriver
  * Method:    _open
  * Signature: (Ljava/lang/String;Ljava/lang/String;)I
  */
-JNIEXPORT jint JNICALL Java_gnu_io_serialite_SerialDriver__1open
+JNIEXPORT jint JNICALL Java_org_mbedsys_io_SerialDriver__1open
   (JNIEnv *env, jclass klass, jstring devNameId, jstring optionsId) {
 	const char *devName = NULL;
 	char *options = NULL;
@@ -321,22 +321,22 @@ JNIEXPORT jint JNICALL Java_gnu_io_serialite_SerialDriver__1open
 }
 
 /*
- * Class:     gnu_io_serialite_SerialDriver
+ * Class:     org_mbedsys_io_SerialDriver
  * Method:    _close
  * Signature: (I)V
  */
-JNIEXPORT void JNICALL Java_gnu_io_serialite_SerialDriver__1close
+JNIEXPORT void JNICALL Java_org_mbedsys_io_SerialDriver__1close
   (JNIEnv *env, jclass klass, jint fd) {
 	DEBUG(" < DD > GNU IO Native lite serial driver: close\n");
 	close(fd);
 }
 
 /*
- * Class:     gnu_io_serialite_SerialDriver
+ * Class:     org_mbedsys_io_SerialDriver
  * Method:    _available
  * Signature: (I)I
  */
-JNIEXPORT jint JNICALL Java_gnu_io_serialite_SerialDriver__1available
+JNIEXPORT jint JNICALL Java_org_mbedsys_io_SerialDriver__1available
   (JNIEnv *env, jclass klass, jint fd) {
 	char *error_message;
 	int result;
@@ -352,11 +352,11 @@ JNIEXPORT jint JNICALL Java_gnu_io_serialite_SerialDriver__1available
 }
 
 /*
- * Class:     gnu_io_serialite_SerialDriver
+ * Class:     org_mbedsys_io_SerialDriver
  * Method:    _read
  * Signature: (I[BII)I
  */
-JNIEXPORT jint JNICALL Java_gnu_io_serialite_SerialDriver__1read__I_3BII
+JNIEXPORT jint JNICALL Java_org_mbedsys_io_SerialDriver__1read__I_3BII
   (JNIEnv *env, jclass klass, jint fd, jbyteArray b, jint off, jint len) {
 	char *error_message;
 	int ret = 0,readCnt = 0;
@@ -382,11 +382,11 @@ JNIEXPORT jint JNICALL Java_gnu_io_serialite_SerialDriver__1read__I_3BII
 }
 
 /*
- * Class:     gnu_io_serialite_SerialDriver
+ * Class:     org_mbedsys_io_SerialDriver
  * Method:    _read
  * Signature: (I)I
  */
-JNIEXPORT jint JNICALL Java_gnu_io_serialite_SerialDriver__1read__I
+JNIEXPORT jint JNICALL Java_org_mbedsys_io_SerialDriver__1read__I
   (JNIEnv *env, jclass klass, jint fd) {
 	char *error_message;
 	int ret;
@@ -404,11 +404,11 @@ JNIEXPORT jint JNICALL Java_gnu_io_serialite_SerialDriver__1read__I
 }
 
 /*
- * Class:     gnu_io_serialite_SerialDriver
+ * Class:     org_mbedsys_io_SerialDriver
  * Method:    _write
  * Signature: (II)V
  */
-JNIEXPORT void JNICALL Java_gnu_io_serialite_SerialDriver__1write__II
+JNIEXPORT void JNICALL Java_org_mbedsys_io_SerialDriver__1write__II
   (JNIEnv *env, jclass klass, jint fd, jint b) {
 	char *error_message;
 	char data = (char)b;
@@ -423,11 +423,11 @@ JNIEXPORT void JNICALL Java_gnu_io_serialite_SerialDriver__1write__II
 }
 
 /*
- * Class:     gnu_io_serialite_SerialDriver
+ * Class:     org_mbedsys_io_SerialDriver
  * Method:    _write
  * Signature: (I[BII)V
  */
-JNIEXPORT void JNICALL Java_gnu_io_serialite_SerialDriver__1write__I_3BII
+JNIEXPORT void JNICALL Java_org_mbedsys_io_SerialDriver__1write__I_3BII
   (JNIEnv *env, jclass klass, jint fd, jbyteArray b, jint off, jint len) {
 	char *error_message;
 	int ret = 0,writeCnt = 0;
@@ -452,11 +452,11 @@ JNIEXPORT void JNICALL Java_gnu_io_serialite_SerialDriver__1write__I_3BII
 }
 
 /*
- * Class:     gnu_io_serialite_SerialDriver
+ * Class:     org_mbedsys_io_SerialDriver
  * Method:    _flush
  * Signature: (I)V
  */
-JNIEXPORT void JNICALL Java_gnu_io_serialite_SerialDriver__1flush
+JNIEXPORT void JNICALL Java_org_mbedsys_io_SerialDriver__1flush
   (JNIEnv *env, jclass klass, jint fd) {
 	char *error_message;
 	int ret = tcdrain(fd);

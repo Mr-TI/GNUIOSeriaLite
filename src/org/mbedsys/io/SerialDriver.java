@@ -1,4 +1,4 @@
-package gnu.io.serialite;
+package org.mbedsys.io;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,7 +25,7 @@ public class SerialDriver {
 	private static native void _flush(int fd) throws IOException;
 	
 	static {
-		System.loadLibrary("gnuioserialite");
+		System.loadLibrary("mserialite");
 	}
 
 	private int fd = -1;
